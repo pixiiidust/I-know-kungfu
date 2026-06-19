@@ -36,13 +36,20 @@ scan hardware → recommend models → download model → serve model
 I-know-kungfu adapts the shape for knowledge:
 
 ```text
-understand task → recommend Knowledge Packs → install pack → serve pack through MCP → grounded agent answers
+scan existing knowledge → understand task → recommend Knowledge Packs → fit-check pack → install/route pack → serve pack through MCP → grounded agent answers
 ```
 
 The difference:
 
 - Odysseus optimizes around machine fit: “Can this model run on my hardware?”
-- I-know-kungfu optimizes around task/context fit: “Which trusted knowledge should this human or agent use for this job?”
+- I-know-kungfu optimizes around task/context fit: “What knowledge do I already have, what am I missing, and which trusted pack should this human or agent use for this job?”
+
+The analogy is stronger with a scan-first sequence:
+
+```text
+Odysseus: hardware scan → model recommendations → download → serve
+I-know-kungfu: knowledge scan → pack recommendations → install/route → serve via MCP
+```
 
 ## Core lock
 
@@ -76,17 +83,15 @@ Each pack is a portable, inspectable knowledge artifact with:
 ## Product loop
 
 ```text
-User docs / Obsidian vault / research corpus
+User docs / Obsidian vault / installed packs / research corpus
         ↓
-Compiler / curator
+Local knowledge inventory: what do I already have?
         ↓
-Curated Knowledge Pack
+Cookbook recommends candidate Knowledge Packs
         ↓
-llms.txt + llms-full.txt + index.json + raw Markdown + metadata
+Context fit check: overlap, gaps, conflicts, freshness, routing boundaries
         ↓
-Cookbook registry
-        ↓
-Human or agent discovers the pack
+Human approves install / trust / routing
         ↓
 Pack is installed locally
         ↓
@@ -95,21 +100,96 @@ MCP server exposes pack search/read tools
 Agent answers faster with citations and scope checks
 ```
 
+The sequence should not assume users know what they need before they know what they already have. For creator-consumers, inventory comes before recommendation.
+
+Supply-side publishing has a separate trust sequence:
+
+```text
+Creator submits / compiles pack
+        ↓
+Private draft pack
+        ↓
+Validation: metadata, provenance, license, scope, leakage checks, evals
+        ↓
+Staged / unlisted review
+        ↓
+Marketplace listing only after trust gates pass
+```
+
+A first-time publisher should not be immediately served in the public marketplace.
+
 ## Marketplace posture
 
 Do not start with payments, accounts, reviews, or public upload moderation.
 
 Start with:
 
-1. package format;
-2. local compiler;
-3. static cookbook registry;
-4. local install command;
-5. MCP serve path;
-6. cited answer demo;
-7. out-of-scope refusal demo.
+2. local knowledge scan;
+3. local compiler;
+4. static cookbook registry;
+5. context fit check;
+6. local install command;
+7. MCP serve path;
+8. cited answer demo;
+9. out-of-scope refusal demo.
 
 Marketplace comes later after trust, provenance, install flow, and quality gates work.
+
+Core trust principle: nothing leaves the user's machine unless they explicitly choose to publish, upload, or share a Knowledge Pack. Scanning, compiling, inspecting, and local MCP serving should work locally first.
+
+Marketplace quality stance: avoid becoming a Scribd-style dumping ground for noisy uploads. Public packs should be curated, scoped, provenance-backed, and validated before distribution. High-quality Knowledge Packs can be monetizable knowledge products, similar to how curated educational knowledge can be monetized by media/learning products.
+
+Distribution angle: product/tool docs can become Knowledge Packs that help users set up and get value from the product. For example, terminal/tooling docs could be packaged for users who want an agent to help them install, configure, troubleshoot, and use that product well. This makes packs both useful context and a discovery funnel.
+
+Public-pack trust ladder:
+
+```text
+Private Draft
+→ Unlisted Share
+→ Community Pack
+→ Verified Pack
+→ Official Pack
+```
+
+Anyone can create private packs. Public marketplace listing requires validation. Official product/tool docs packs should be labeled separately from community packs.
+
+GitHub Marketplace analogy, checked against GitHub Docs on 2026-06-19:
+
+- GitHub separates ordinary repositories from Marketplace app listings. Repositories can be created freely, while Marketplace listings go through draft/submission/review requirements.
+- Marketplace listings require customer-facing basics: valid publisher contact, relevant app description, pricing plan, privacy policy, support method, working links, platform integration/value beyond authentication, and listing assets/copy quality.
+- Paid Marketplace apps have a higher bar: verified publisher organization, usage threshold, and billing event handling.
+- GitHub Marketplace badges distinguish publisher/listing verification signals, but GitHub explicitly says it does not analyze or inspect third-party code; publishers remain responsible for app upkeep.
+
+Implication for I-know-kungfu: use a GitHub-like split between open/private creation and curated public listing, but be stricter than GitHub on pack quality because bad knowledge can directly pollute agent answers. Verification should mean source/provenance/scope/eval quality, not only publisher identity.
+
+Public visibility and recommendation should be separate gates:
+
+```text
+Gate A: Listing eligibility
+- Can appear in public Cookbook search.
+- Requires scope/non-scope, provenance, license, maintainer/contact, support/report link, valid generated artifacts, and sensitivity scan.
+
+Gate B: Recommendation eligibility
+- Can be actively recommended by Cookbook or agents.
+- Requires eval set, freshness policy, task/use-case fit, no severe overlap/conflict flags, and maintainer reputation or verification.
+```
+
+A pack can be findable before it is recommended. This keeps discovery open while protecting users and agents from low-quality or risky context.
+
+Meaning of verification:
+
+```text
+Community Pack
+= public, contract valid enough to inspect and install with caution.
+
+Verified Pack
+= contract valid + source/provenance checked + behavior/eval checks passed.
+
+Official Pack
+= Verified Pack owned, approved, or claimed by the original product/tool/source owner.
+```
+
+Verification should not mean publisher identity alone. Because packs shape agent answers, verification must include pack contract quality, source/provenance quality, and behavior under basic evals.
 
 ## Actors
 
@@ -241,11 +321,218 @@ MAINTAIN
 
 ## Suggested MVP demo story
 
-As an agent user, I can install the “Agent Workflows” Knowledge Pack from Cookbook, connect it to my MCP client, and ask “What is Knowledge Pack Routing?” The agent answers with citations from the pack instead of guessing.
+As a creator-consumer with an existing messy knowledge base, I can inspect a first-time agent setup Knowledge Pack from Cookbook, compare it against my current knowledge, see overlap/gaps/conflicts, install it only if it fits, connect it to my agent harness through MCP or another supported surface, and ask a setup/workflow question. The agent answers with citations from the pack instead of guessing.
 
-This single story proves the product.
+The first proof pack can use Hermes because it matches the original pain, but the product should be harness-agnostic. Knowledge Packs should work across leading agent harnesses and clients through standard surfaces such as MCP, `llms.txt`, raw Markdown, and `index.json`.
+
+V1 integration principle: surface-first, not harness-specific.
+
+```text
+Primary path: MCP clients
+Universal fallback: llms.txt
+Tool/building-block path: raw Markdown + index.json
+```
+
+Ship setup instructions for leading harnesses as wrappers over those surfaces rather than building custom integrations per harness.
+
+Scan principle: optional and local-first.
+
+Users should be able to run a knowledge scan before compiling, installing, or publishing packs, but it should not be mandatory when they already know the source scope. Users can skip scan and compile directly from explicit include/exclude rules. However, public publication still requires enough metadata to pass listing gates.
+
+Recommended weak-metadata pipeline:
+
+```text
+raw docs/vault
+→ source manifest: paths, filenames, headings, links, dates, known frontmatter, excludes
+→ metadata enrichment: inferred domains, topics, sensitivity warnings, confidence
+→ user review: approve/rename/exclude weak labels
+→ package artifacts: kb.json, index.json, llms.txt, raw Markdown mirror
+→ optional MCP serve
+```
+
+Do not generate `llms.txt` as the first artifact. Generate a source manifest first, then derive `index.json` and `llms.txt` from reviewed metadata. If sources have weak metadata, label fields as inferred and confidence-scored rather than pretending they were source-declared.
+
+Manual structured path:
+
+Users can skip scan with an explicit `iknow.yaml` pack contract.
+
+```yaml
+id: terminal-setup
+title: Terminal Setup Pack
+scope: Helps users install, configure, troubleshoot, and get value from Terminal.
+non_scope:
+  - Does not cover unrelated shell scripting.
+  - Does not replace official support.
+sources:
+  - path: docs/
+    include: ["**/*.md"]
+    exclude: ["drafts/**", "private/**"]
+license: CC-BY-4.0
+maintainer:
+  name: Example Maintainer
+publication:
+  default_visibility: private_draft
+```
+
+```bash
+iknow compile --config iknow.yaml
+```
+
+Scan is one way to produce a pack contract. `iknow.yaml` is another. Public listing gates still apply either way.
+
+Compile output default: reviewable private draft pack.
+
+```text
+.kungfu/packs/<pack-id>/
+  kb.json
+  index.json
+  llms.txt
+  raw/
+  sources.json
+  review.md
+  warnings.json
+```
+
+`iknow compile` should not default to a minimal publishable artifact. It should default to a private draft with review artifacts so the creator can inspect generated metadata, sensitivity warnings, source provenance, and serving behavior before publish/share decisions.
+
+Next explicit actions:
+
+```bash
+iknow inspect <pack-id>
+iknow serve <pack-id> --mcp
+```
+
+Backend posture:
+
+This is a product, so it eventually needs a backend, but the backend should not be required for the first local proof. Do not plan past the fog of war: resolve only the frontier decisions needed for the next build slice, while keeping module seams endpoint-ready.
+
+Architecture stance:
+
+```text
+Build local-first modules now.
+Expose clean ports/adapters for hosted endpoints later.
+Use filesystem/local adapters first.
+Do not bake in assumptions that block registry/API scaling.
+```
+
+Frontier decisions resolved/recommended now:
+
+```text
+1. Pack contract shape: iknow.yaml → kb.json/index.json/llms.txt.
+2. Draft output shape: reviewable private draft pack.
+3. Local storage seam: source-local drafts + global installed packs.
+4. Serve seam: local MCP over installed packs.
+5. Registry seam: interface for search/list/publish/validate, backed by local mock/static registry for now.
+```
+
+Local storage recommendation:
+
+```text
+./.kungfu/
+  scans/
+  drafts/
+  manifests/
+
+~/.iknow/
+  installed/
+  registry/
+  mcp/
+```
+
+Reason: source-local `.kungfu` keeps private draft state close to the docs being packaged; global `~/.iknow` marks packs that have been explicitly installed and are available to agents. This separates "I am building/reviewing this pack" from "my agent can use this pack".
+
+Backend seams to design, not fully build yet:
+
+```text
+RegistryClient
+- search_packs(query)
+- get_pack(id)
+- submit_pack_manifest(pack)
+- check_listing_eligibility(pack)
+
+ArtifactStore
+- put_artifact(pack_version, file)
+- get_artifact(pack_version, file)
+
+ValidationService
+- validate_contract(pack)
+- validate_sources(pack)
+- run_eval_set(pack)
+
+IdentityProvider
+- current_user()
+- current_org()
+- claim_official_pack(pack)
+```
+
+Local control plane responsibilities:
+
+```text
+scan local docs/vaults
+compile private draft packs
+inspect warnings/provenance
+install packs locally
+serve through MCP
+compare candidate packs against local inventory
+```
+
+Registry backend responsibilities later:
+
+```text
+public/unlisted pack listings
+publisher accounts/orgs
+listing eligibility gates
+recommendation eligibility gates
+verified/official ownership claims
+versioning and update metadata
+trust/reputation signals
+monetization later
+```
+
+Database should store metadata and pointers first, not private vault contents by default. Do not design the full DB beyond the current seam needs.
+
+This story proves the product only if it includes a context fit check before install. Installing a prebuilt pack without overlap/conflict awareness can create duplicate or polluted knowledge.
 
 ## Prototype shape
+
+After the `/grill-with-docs` frontier decisions are finished, run `/prototype` to build a minimal UI smell test for serving from Cookbook. The prototype question is: "Does the Cookbook serving flow feel understandable before we build the CLI/backend?"
+
+Primary prototype screen: one pack detail / serve flow, with a small sidebar/list of other packs. Do not start with full marketplace browse. The goal is to test the trust → fit → serve moment, not discovery breadth.
+
+Prototype should focus on the user-facing serving flow:
+
+```text
+Cookbook pack listing
+→ inspect trust/scope/install surfaces
+→ compare/fit note if local inventory exists
+→ choose serve surface
+→ show MCP / llms.txt / raw Markdown setup
+→ ask/sample cited answer
+```
+
+Prototype fake/prove boundary:
+
+```text
+Fake:
+- real backend
+- real auth
+- real payments
+- real pack upload
+- real MCP process
+- real search infrastructure
+
+Prove visually:
+- what a pack card shows
+- what trust/status looks like
+- how a user chooses a serving surface
+- how context fit appears
+- what “agent can now use this” means
+- where citations/out-of-scope behavior appears
+```
+
+The `/prototype` output should be UI-only with realistic static data. It is a smell test, not the working CLI/backend.
+
+Do not start the UI prototype until the grill session finishes the frontier decisions.
 
 Build a static web Cookbook plus local CLI installer using existing Pixi Wiki data.
 
