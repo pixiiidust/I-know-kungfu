@@ -99,39 +99,64 @@ This PRD does not ask for a full marketplace. It asks for the smallest working s
 
 ## Implementation Decisions
 
-- Use the Cookbook serving prototype’s Variant C as the product direction for the first build slice.
-- Keep the product frame verb-first: find useful wikis to add to your knowledge base, compare local fit, serve through the right surface, and harmonize diffs when overlap exists.
-- Do not frame the product as a prompt library or “loop” system. The useful reference is the community-sharing/listing interface pattern, not the product concept.
-- Treat Knowledge Packs as portable, inspectable artifacts for agents and humans.
-- Use a pack contract as the central seam for the MVP. The contract should expose identity, scope, non-scope, trust state, freshness, provenance, source manifest, surfaces, and validation state.
-- Support a manual structured pack configuration path that can produce the pack contract without requiring a scan.
-- Support an optional local knowledge scan path. Scanning helps users understand existing coverage and risk, but it should not be mandatory when users already know the source scope.
-- Generate a source manifest before generating `llms.txt`. Do not let weak inferred metadata become routing truth without review.
-- Mark inferred metadata as inferred and confidence-scored rather than pretending it was source-declared.
-- Make the default compiler output a reviewable private draft pack, not a public listing.
-- Include review artifacts in draft output so creators can inspect metadata, provenance, sensitivity warnings, and serving behavior before sharing.
+- Preserve Variant C as the first product direction: find useful wiki or pack, check local fit, choose serving surface, harmonize overlap, then inspect scope, proof, and refusal.
+- Keep the product frame verb-first: find useful wikis to add to a knowledge base, compare local fit, serve through the right surface, and harmonize diffs when overlap exists.
+- Do not frame the product as a prompt library or Loop Library system. The useful reference is the community-sharing/listing pattern, not the product concept.
+
+### Highest useful seam
+
+- Put the first build slice around the **Pack Contract**. It is the highest useful seam because humans, agents, the Cookbook UI, the compiler, the installer, validators, and future registry endpoints all need the same contract.
+- Treat the Pack Contract as the central interface for the MVP. Its interface includes identity, scope, non-scope, provenance, freshness, license, trust state, available serving surfaces, source manifest references, validation state, and warnings.
+- Keep the Pack Contract deep: callers should not need to know whether the contract came from a scan, `iknow.yaml`, official docs metadata, or manual review.
+
+### Local control-plane modules
+
+- Build the **Pack Contract module** first. Its interface should validate and expose the contract while hiding parsing, defaults, inferred metadata handling, and warning generation.
+- Build the **Draft Compiler module** behind a small interface: compile selected sources plus a Pack Contract into a Reviewable Private Draft Pack. Its implementation can handle raw Markdown mirroring, source manifests, `index.json`, `llms.txt`, warnings, and review notes.
+- Build the **Local Inventory module** as a separate module from compilation. Its interface should produce a Local Knowledge Inventory; its implementation can use an optional scan now and richer source analysis later.
+- Build the **Context Fit module** at the seam between candidate Pack Contract and Local Knowledge Inventory. Its interface should return overlap, gaps, boundary/conflict warnings, merge risk, and a route recommendation.
+- Build the **Harmonization module** as explicit decision state, not hidden mutation. Its interface should represent choices such as install, skip, route-only, prefer-local, prefer-pack, or keep-both-with-boundaries.
+- Build the **Installed Pack Store module** as the seam between draft packs and agent-available packs. Its first adapter should use the local filesystem; future adapters can register installs with a hosted registry without changing callers.
+- Build the **Serving module** over installed packs. Its interface should expose list, summarize, search, and read behavior for agent harnesses. The first serving adapter should be MCP; `llms.txt`, raw Markdown, and `index.json` remain standard surfaces rather than bespoke harness integrations.
+- Build the **Static Registry module** for the first Cookbook slice. Its interface should list packs and fetch pack details. Its first adapter can be static/local; future adapters can call a Registry backend.
+- Build the **Validation module** as an endpoint-ready seam. Its first adapter can perform local contract/provenance/surface checks; later adapters can add hosted listing eligibility, recommendation eligibility, and eval checks.
+
+### Endpoint-ready seams
+
+- Keep these seams adapter-backed from the start: Registry, Artifact Store, Validation, Identity, Installed Pack Store, and Serving.
+- Use local/static/filesystem adapters first. Do not build hosted accounts, backend auth, payments, public upload, vector search, or cloud MCP in this PRD.
+- Design the interfaces so hosted endpoints can replace local adapters later without changing the Pack Contract or the Cookbook serving flow.
+- Keep identity conceptual in the first slice. Official Pack ownership claims are later work.
+
+### Storage and artifact decisions
+
 - Separate source-local draft state from globally installed packs. Drafts live near the source being packaged; installed packs live in a global user-level store where agents can use them.
-- Use a static/local Cookbook registry for the first MVP. This proves browse, inspect, fit-check, install, serve, answer, and refuse without hosted accounts or public upload moderation.
-- Keep the registry seam endpoint-ready. The first adapter can be static/local, but the interface should later support hosted search, listing, publish, validation, and trust states.
-- Keep the artifact seam endpoint-ready. The first artifact store can be filesystem/local, but the interface should later support hosted artifact pointers.
-- Keep the validation seam endpoint-ready. The first validator can be local checks, but the interface should later support stronger contract, provenance, and eval checks.
-- Keep the identity seam conceptual only for the first slice. Official-pack ownership claims are later work.
+- Use `./.kungfu/` for source-local scans, manifests, and drafts.
+- Use `~/.iknow/` for installed packs, local registry configuration, and MCP-serving state.
+- Make the default compiler output a Reviewable Private Draft Pack, not a public listing.
+- Include review artifacts in draft output so creators can inspect metadata, provenance, sensitivity warnings, and serving behavior before sharing.
+- Generate a Source Manifest before generating `llms.txt`. Do not let weak inferred metadata become routing truth without review.
+- Mark inferred metadata as inferred and confidence-scored rather than source-declared.
+
+### Trust and marketplace decisions
+
+- Treat Community Pack, Verified Pack, and Official Pack as distinct trust states.
+- Define Community Pack as public and contract-valid enough to inspect and install with caution.
+- Define Verified Pack as contract-valid, source/provenance checked, and behavior/eval checked.
+- Define Official Pack as Verified plus source-owner approval or ownership.
+- Separate Listing Eligibility from Recommendation Eligibility.
+- Keep the first registry static/local. This proves browse, inspect, fit-check, install, serve, answer, and refuse without hosted accounts or public upload moderation.
+
+### Serving and UI decisions
+
 - Use MCP as the primary interactive serving path for installed packs.
 - Use `llms.txt` as the universal compact routing entrypoint, not as the whole source of truth.
 - Use raw Markdown as the auditable primitive for source citation.
 - Use `index.json` as the machine-readable metadata/index surface.
-- Require context fit checking before install/trust in the demo path. The product is not proven if it installs packs without overlap and conflict awareness.
-- Represent fit as overlap, gaps filled, conflicts/boundaries, and a route recommendation.
-- Represent harmonization as explicit user-visible decisions such as merge as route, install, skip, or do not route.
-- Treat Community, Verified, and Official as distinct trust states.
-- Define Community as public and contract-valid enough to inspect and install with caution.
-- Define Verified as contract-valid, source/provenance checked, and behavior/eval checked.
-- Define Official as Verified plus source-owner approval or ownership.
-- Separate listing eligibility from recommendation eligibility.
-- Build the first demo around one proof pack, with a small supporting registry of two or three packs for comparison.
+- Require Context Fit checking before install or trust in the demo path. The product is not proven if it installs packs without overlap and conflict awareness.
+- Represent fit as overlap, gaps filled, boundary/conflict warnings, merge risk, and route recommendation.
 - Keep the UI clean, minimal, sequenced, and table/list-first. Avoid dashboard clutter and card piles.
-- The first MVP should be local-first. Nothing leaves the user’s machine unless they explicitly choose to publish, upload, or share.
-- The first MVP should not depend on a hosted backend, account system, payments, reviews, public upload moderation, vector database, hosted RAG, browser extension, or cloud MCP hosting.
+- Build the first demo around one proof pack, with a small supporting registry of two or three packs for comparison.
 
 The prototype captured the decision-rich flow as:
 
@@ -145,23 +170,22 @@ Find useful wiki / pack
 
 ## Testing Decisions
 
-- Test external behavior at the highest useful seam. Prefer command-level and integration-style tests over testing implementation details.
-- The first high-value seam is the pack contract and local control-plane behavior around it.
-- Test that a valid manual pack contract can compile into expected pack artifacts.
-- Test that a draft pack includes metadata, source manifest, generated routing/index surfaces, review notes, and warnings.
+- Test external behavior at the highest useful seam. Prefer command-level and integration-style tests over implementation-detail tests.
+- Treat the Pack Contract as the first test surface. Tests should prove that callers can validate and consume a contract without knowing whether it came from `iknow.yaml`, a scan, or static registry data.
+- Test the Draft Compiler through its public interface: a valid contract plus selected sources produces a Reviewable Private Draft Pack with expected artifacts and review outputs.
 - Test that generated routing surfaces preserve scope and non-scope boundaries.
 - Test that inferred metadata is marked as inferred and does not masquerade as source-declared metadata.
-- Test that a static/local registry can list packs and return a pack by id.
-- Test that trust states are represented distinctly for Community, Verified, and Official packs.
-- Test that listing eligibility and recommendation eligibility can diverge.
-- Test that a local install copies or registers pack artifacts into the installed-pack store without requiring a hosted backend.
-- Test that the local serve path exposes pack search/read behavior through the supported serving seam.
+- Test the Static Registry through its interface: it can list packs, return a pack by id, and preserve Community, Verified, and Official trust states.
+- Test that Listing Eligibility and Recommendation Eligibility can diverge.
+- Test the Local Inventory and Context Fit seam with realistic inventories: output must include overlap, gaps, boundary/conflict warnings, merge risk, and a route recommendation.
+- Test Harmonization as explicit decision state. Installing, skipping, route-only use, prefer-local, prefer-pack, and keep-both-with-boundaries should be visible decisions, not hidden side effects.
+- Test the Installed Pack Store through its interface: installing a draft registers or copies pack artifacts into the installed-pack store without requiring network access.
+- Test the Serving module through its interface: installed packs can be listed, summarized, searched, and read by an agent-facing adapter.
+- Test the MCP adapter at the serving seam rather than testing internal file layout directly.
 - Test that a sample in-scope query returns an answer with at least one exact source citation.
 - Test that a sample out-of-scope query refuses or redirects rather than answering from the wrong pack.
-- Test that context fit output includes overlap, gaps, conflicts or boundaries, and route recommendation.
-- Test that harmonization decisions are represented as explicit choices rather than hidden mutation.
-- Test that local-first privacy is preserved: scan, compile, inspect, install, and serve should not require upload or network access in the first slice.
-- Test one demo flow end-to-end: open Cookbook, pick pack, see trust/scope, check local fit, install, serve, ask an in-scope question, get a cited answer, ask an out-of-scope question, get a refusal.
+- Test local-first privacy as behavior: scan, compile, inspect, install, and serve do not require upload, auth, or hosted network access in the first slice.
+- Test one end-to-end demo flow: open Cookbook, pick pack, see trust/scope, check local fit, choose harmonization, install or route locally, serve, ask an in-scope question, get a cited answer, ask an out-of-scope question, get a refusal.
 - Do not test visual styling as production behavior yet. The static prototype already served as the initial UI smell test.
 - Do not test hosted marketplace behavior, accounts, payments, public upload moderation, cloud MCP, or vector retrieval in this PRD.
 
