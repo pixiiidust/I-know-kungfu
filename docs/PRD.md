@@ -12,6 +12,8 @@ Existing RAG and upload-docs flows are often hard to package, hard to trust, har
 
 I-know-kungfu should turn useful docs and wikis into installable Knowledge Packs so humans and agents can inspect scope, compare local fit, choose the right serving surface, and use trusted context without building custom RAG from scratch.
 
+This PRD covers the first slice of a larger local-first knowledge distribution system: prove that a pack can be trusted, fitted, served, cited, and refused against before expanding into hosted registry, publisher, verification, and monetization workflows.
+
 The first product slice should prove the Cookbook serving flow locally before building a hosted marketplace. The flow must answer:
 
 - What useful wiki or pack should I add?
@@ -34,7 +36,7 @@ Find useful wiki / pack
 → inspect scope / proof / refusal
 ```
 
-This PRD does not ask for a full marketplace. It asks for the smallest working slice that proves the trust-to-serve path:
+This PRD does not ask for a full marketplace. It defines the durable substrate that later marketplace work depends on: Pack Contract, Context Fit, Harmonization, Installed Pack Store, and Serving seams. It asks for the smallest working slice that proves the trust-to-serve path:
 
 1. A static Cookbook registry with a few realistic packs.
 2. A pack contract format that exposes scope, non-scope, provenance, trust state, freshness, and surfaces.

@@ -12,6 +12,12 @@ Install trusted knowledge into AI agents.
 
 Find useful wikis or packs to add to your knowledge base, compare local fit, serve them through the right surface, and harmonize diffs when the new pack overlaps with what you already know.
 
+## Bigger picture
+
+I-know-kungfu is working toward a local-first knowledge distribution system: people and teams can package trusted docs as Knowledge Packs, agents can consume them through standard surfaces, and high-quality packs can later become discoverable, verifiable, and monetizable through a Cookbook/registry.
+
+The current MVP is the first slice of that larger system: prove the trust-to-serve loop locally before adding hosted marketplace, publisher, or monetization mechanics.
+
 ## Core idea
 
 Knowledge Packs are portable, inspectable packages of curated knowledge. A pack should expose enough structure for humans and agents to answer:
