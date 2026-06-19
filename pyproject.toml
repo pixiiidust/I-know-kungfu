@@ -17,3 +17,6 @@ dev = ["pytest>=7"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"iknow.registry" = ["fixtures/*.json"]
