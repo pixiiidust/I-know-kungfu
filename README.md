@@ -121,3 +121,69 @@ Start here:
 - `docs/PRD.md` for the current MVP requirements
 - `docs/adr/0001-knowledge-base-wiki-is-core-object.md` for the vocabulary decision
 - `prototype/cookbook-serving/NOTES.md` for prototype status and run notes
+
+---
+
+## Install & run
+
+```bash
+# Editable install (local dev)
+pip install -e ".[dev]"
+
+# Run the CLI
+iknow --help
+iknow --version
+```
+
+## Run tests
+
+```bash
+# With dev extras installed
+python -m pytest tests/ -v
+```
+
+## Module seams (local control plane)
+
+The control plane is organized as a standard `src/iknow/` Python package.
+Each sub-module corresponds to one **seam** named in the PRD.
+All v1 adapters are local-only — no hosted backend, auth, payments,
+vector DB, or cloud MCP.
+
+| Module             | Seam / responsibility                                  | v1 adapter (local-only)                     |
+|--------------------|--------------------------------------------------------|---------------------------------------------|
+| `contracts`        | Wiki Contract — validate & expose identity, scope, trust, provenance, freshness, entry points | Static files / YAML on disk |
+| `registry`         | Static Cookbook Registry — list wikis, fetch details   | Bundled or user-placed JSON/YAML             |
+| `inventory`        | Local Knowledge Inventory — what the user already knows | Optional filesystem scan + manual fallback   |
+| `fit`              | Context Fit — compare wiki vs inventory: overlap, gaps, conflicts, route recommendation | Heuristic local analysis |
+| `harmonization`    | Harmonization — explicit decision state (install, skip, route-only, prefer-local, prefer-wiki, keep-both) | Filesystem-tracked decisions |
+| `compiler`         | Draft Wiki Compiler — sources + contract → Reviewable Private Draft Wiki | Local filesystem read/write |
+| `store`            | Installed Wiki Store — register drafts as agent-available | Local filesystem (`~/.iknow/`) |
+| `serving`          | Serving — list, summarize, search, read installed wikis | Local MCP server |
+| `validation`       | Validation — contract, provenance, entry-point checks   | Local static checks |
+
+### Endpoint-ready seams
+
+Registry, store, serving, validation, and identity are designed with
+adapter interfaces so that hosted backends can replace local adapters
+later without changing the Wiki Contract or the serving flow.
+
+### Identity & trust states
+
+Identity is conceptual in v1. Trust states (Community, Verified, Official)
+are tracked in the Wiki Contract but ownership claims require later work.
+
+### Storage convention
+
+| Path          | Purpose                                      |
+|---------------|----------------------------------------------|
+| `./.kungfu/`  | Source-local scans, manifests, drafts        |
+| `~/.iknow/`   | Installed wikis, registry config, MCP state  |
+
+### What is NOT introduced
+
+- Hosted backend
+- User accounts or payments
+- Public upload moderation
+- Vector database or RAG service
+- Cloud MCP hosting
+- Browser extension
