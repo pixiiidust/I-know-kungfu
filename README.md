@@ -142,6 +142,53 @@ iknow --version
 python -m pytest tests/ -v
 ```
 
+## Demo: Variant C end-to-end CLI flow
+
+Run the full demo with no network access (uses bundled fixtures only):
+
+```bash
+# One command to exercise the whole pipeline
+python scripts/demo.py
+```
+
+Or step through each phase interactively:
+
+```bash
+# 1. Find wiki — list available wikis in the Cookbook registry
+iknow cookbook list
+
+# 2. Inspect scope & entry points for a specific wiki
+iknow cookbook inspect agent_workflow_setup
+
+# 3. Check local fit — compare against default local inventory
+iknow fit agent_workflow_setup
+
+# 4. Compile a private draft from iknow.yaml and Markdown sources
+iknow compile --config tests/fixtures/issue6/iknow.yaml
+
+# 5. Install the compiled draft into the global store
+iknow install test-wiki \
+  --draft-dir tests/fixtures/issue6/.kungfu/drafts/test-wiki
+
+# 6. List installed wikis
+iknow list
+
+# 7. Serve — search inside the installed wiki (in-scope → proof)
+iknow serve search test-wiki testing
+
+# 8. Serve — search inside the installed wiki (out-of-scope → refusal)
+iknow serve search test-wiki deployment
+
+# 9. Serve — read a document with a citation path
+iknow serve read test-wiki getting-started.md
+```
+
+The demo preserves the **Variant C** order:
+
+```
+find wiki → check fit → choose entry point → harmonize → inspect proof/refusal
+```
+
 ## Module seams (local control plane)
 
 The control plane is organized as a standard `src/iknow/` Python package.

@@ -1,6 +1,6 @@
 # Getting Started
 
-This is a test document for the compiler fixture.
+This is a testing document for the compiler fixture.
 
 ## Installation
 
