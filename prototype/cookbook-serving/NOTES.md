@@ -29,11 +29,11 @@ http://127.0.0.1:4173/
 
 ## What this prototype should visually prove
 
-- What a Knowledge Pack detail view shows.
+- What a knowledge base wiki detail view shows.
 - How Community, Verified, and Official trust badges read in the flow.
 - How scope and non-scope are exposed before use.
-- How a candidate pack compares against local inventory: overlap, gaps, and routing recommendation.
-- How the user chooses a serving surface: MCP, `llms.txt`, raw Markdown, or `index.json`.
+- How a candidate wiki compares against local inventory: overlap, gaps, and routing recommendation.
+- How the user chooses a serving entry point: MCP, `llms.txt`, raw Markdown, or `index.json`.
 - How copyable setup/config blocks appear.
 - Where a sample cited answer appears.
 - Where an out-of-scope refusal appears.
@@ -62,11 +62,11 @@ Corrected after Jamie's review: the UI branch of `/prototype` should expose mult
 
 Current variants:
 
-- `?variant=A` — Library flow: closest to Forward Future Loop Library. Hero, feature install block, four-step flow rail, filters, structured pack rows, then detail/serve/proof.
-- `?variant=B` — Guided sequence: A-derived variant with the same library/table base, but stronger step-by-step framing for pick pack → check fit → choose surface → prove/refuse.
-- `?variant=C` — Serve after fit: Jamie's preferred variant. Pack table appears immediately after the hero, then a local-fit decision panel, serving surface/setup, harmonize overlap table, scope/non-scope, and proof/refusal.
+- `?variant=A` — Library flow: closest to Forward Future Loop Library. Hero, feature install block, four-step flow rail, filters, structured wiki rows, then detail/serve/proof.
+- `?variant=B` — Guided sequence: A-derived variant with the same library/table base, but stronger step-by-step framing for pick wiki → check fit → choose entry point → prove/refuse.
+- `?variant=C` — Serve after fit: Jamie's preferred variant. Wiki table appears immediately after the hero, then a local-fit decision panel, serving entry point/setup, harmonize overlap table, scope/non-scope, and proof/refusal.
 
-Product-copy correction from Jamie: this is not about Loop Library-style prompts. The relevant similarity is the community-sharing/listing approach. The actual product frame is finding useful wikis to add to your own knowledge base, comparing local fit, serving through a chosen surface, and harmonizing/integrating diffs when the new pack overlaps with existing knowledge.
+Product-copy correction from Jamie: this is not about Loop Library-style prompts. The relevant similarity is the community-sharing/listing approach. The actual product frame is finding useful knowledge base wikis to add to your own knowledge base, comparing local fit, serving through a chosen entry point, and harmonizing/integrating diffs when the new wiki overlaps with existing knowledge.
 
 Light mode is the default; top nav includes a Dark toggle for checking the dark palette. Typography was softened after Jamie feedback: smaller headings, sans-serif semibold weights, cleaner spacing, and less oversized bold display type.
 

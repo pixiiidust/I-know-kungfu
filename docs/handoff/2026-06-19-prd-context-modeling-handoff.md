@@ -4,6 +4,8 @@ Date: 2026-06-19
 Repo: `/root/hermes-workspace/I-know-kungfu`
 Status: Variant C prototype accepted as initial smell-test direction; PRD/README/prototype committed and pushed.
 
+Terminology update after this handoff: **knowledge base wiki** is now the core product object. **Knowledge Pack** is only the portable package/install format for a wiki. Prefer "serving entry point" for MCP, `llms.txt`, raw Markdown, and `index.json`.
+
 ## Current durable state
 
 Latest pushed repo commit at handoff time:

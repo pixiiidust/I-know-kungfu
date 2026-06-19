@@ -3,6 +3,8 @@
 Date: 2026-06-19
 Status: early research / pre-PRD
 
+Terminology clarification after PRD refinement: **knowledge base wiki** is the core product object. **Knowledge Pack** is the portable package/install format for a wiki, not the main product noun. Earlier brainstorm sections may use "pack" as shorthand; read them through this distinction.
+
 ## Working repo name
 
 `I-know-kungfu`
@@ -13,17 +15,19 @@ Use as playful repo/prototype name. Avoid Matrix logos/assets/quoted marketing b
 
 ## Product thesis
 
-I-know-kungfu turns Obsidian vaults, raw docs, repos, and research folders into installable Knowledge Packs that agents can load through `llms.txt`, raw Markdown, source metadata, and MCP.
+I-know-kungfu helps users grow and evolve their own knowledge base by importing, adapting, and serving bounded knowledge base wikis instead of starting from scratch or relying on noisy web search.
 
-Humans inspect and install trusted packs. Agents search, cite, and respect pack boundaries.
+Each imported serving unit is conceptually a wiki: source-backed pages, scope/non-scope, provenance, freshness, and agent-friendly entry points such as MCP, `llms.txt`, raw Markdown, and `index.json`.
+
+A **Knowledge Pack** is the portable packaging/install format for a knowledge base wiki. It is useful implementation language, but not the primary product noun.
 
 ## One-line pitch
 
-Install trusted knowledge into AI agents.
+Grow your knowledge base with proven wikis your agents can actually use.
 
 ## Verb-first version
 
-Turn messy docs and Obsidian vaults into installable Knowledge Packs so agents can search, cite, and use trusted context without building custom RAG from scratch.
+Import proven knowledge base wikis, fit them to what you already know, and serve them to agents as bounded, source-backed context without building custom RAG from scratch.
 
 ## Source inspiration
 
