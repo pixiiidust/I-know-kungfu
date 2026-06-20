@@ -1,8 +1,8 @@
 # PRD: Cookbook Wiki Serving MVP
 
 Date: 2026-06-19
-Status: ready for agent implementation planning
-Prototype decision: Variant C passed the initial smell test
+Status: implemented for Phase 1; Phase 2 real-data productization in progress
+Prototype decision: Variant C was the historical smell-test direction; Variant A is now the chosen UI surface for Phase 2.
 
 ## Problem Statement
 
@@ -26,7 +26,7 @@ The first product slice should prove the Cookbook wiki serving flow locally befo
 
 Build a local-first Cookbook wiki serving MVP that lets a human or agent inspect a small static registry of knowledge base wikis, compare a candidate wiki against a local knowledge inventory, install or route the wiki locally, serve it through supported agent-readable entry points, and demonstrate grounded use with citations and out-of-scope refusal.
 
-The prototype direction is Variant C:
+The original prototype smell-test direction was Variant C:
 
 ```text
 Find useful knowledge base wiki
@@ -103,7 +103,7 @@ A **Knowledge Pack** is the portable packaging/install format for one of these w
 
 ## Implementation Decisions
 
-- Preserve Variant C as the first product direction: find a useful knowledge base wiki, check local fit, choose serving entry point, harmonize overlap, then inspect scope, proof, and refusal.
+- Preserve the product direction from the prototype: find a useful knowledge base wiki, check local fit, choose serving entry point, harmonize overlap, then inspect scope, proof, and refusal. Use Variant A as the chosen UI surface for Phase 2; older Variant C wording is historical.
 - Keep the product frame verb-first: find useful wikis to add to a knowledge base, compare local fit, serve through the right entry point, and harmonize diffs when overlap exists.
 - Do not frame the product as a prompt library or Loop Library system. The useful reference is the community-sharing/listing pattern, not the product concept.
 

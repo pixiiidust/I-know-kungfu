@@ -105,6 +105,8 @@ inspect real package → fit check → export registry → install/route → ser
 
 Details: [`docs/demo/phase2-real-data-cookbook.md`](docs/demo/phase2-real-data-cookbook.md)
 
+Phase 2 boundary: [`docs/roadmap/phase2-real-data-productization.md`](docs/roadmap/phase2-real-data-productization.md)
+
 ## CLI quick reference
 
 ```bash
@@ -191,5 +193,6 @@ Start with:
 
 - [`CONTEXT.md`](CONTEXT.md) — glossary and domain terms
 - [`docs/PRD.md`](docs/PRD.md) — current MVP requirements
+- [`docs/roadmap/phase2-real-data-productization.md`](docs/roadmap/phase2-real-data-productization.md) — Phase 2 boundary and issue sequence
 - [`docs/adr/0001-knowledge-base-wiki-is-core-object.md`](docs/adr/0001-knowledge-base-wiki-is-core-object.md) — vocabulary decision
 - [`prototype/cookbook-serving/NOTES.md`](prototype/cookbook-serving/NOTES.md) — prototype notes
