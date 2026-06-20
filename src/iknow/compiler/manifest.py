@@ -49,6 +49,8 @@ class SourceManifest:
     maintainer: str = ""
     provenance: str = ""
     freshness: str = ""
+    trust_state: str = ""
+    publication: str = ""
     entry_points: List[str] = field(default_factory=list)
     included: List[ManifestEntry] = field(default_factory=list)
     excluded: List[ManifestEntry] = field(default_factory=list)
@@ -151,6 +153,8 @@ def build_manifest(
         maintainer=config.maintainer,
         provenance=config.provenance,
         freshness=config.freshness,
+        trust_state=config.trust_state,
+        publication=config.publication,
         entry_points=list(config.entry_points),
         metadata_warnings=list(config.warnings),
     )

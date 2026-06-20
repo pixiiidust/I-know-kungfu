@@ -117,12 +117,35 @@ def _is_out_of_scope(query: str, kb: Dict[str, Any]) -> bool:
     if not non_scope:
         return False
     q_lower = query.lower()
+    q_tokens = set(_scope_tokens(query))
     for keyword in non_scope:
         kw_lower = keyword.lower()
         # Check if the query contains the non_scope keyword OR the keyword contains the query
         if kw_lower in q_lower or q_lower in kw_lower:
             return True
+        kw_tokens = set(_scope_tokens(keyword))
+        if q_tokens and q_tokens.issubset(kw_tokens):
+            return True
     return False
+
+
+def _scope_tokens(text: str) -> List[str]:
+    """Return normalized content tokens for scope phrase matching.
+
+    This keeps out-of-scope checks deterministic while allowing small singular /
+    plural differences such as ``case study`` vs ``case studies``.
+    """
+    tokens: List[str] = []
+    for raw in text.lower().replace("/", " ").split():
+        token = "".join(ch for ch in raw if ch.isalnum())
+        if len(token) < 3:
+            continue
+        if token.endswith("ies") and len(token) > 4:
+            token = token[:-3] + "y"
+        elif token.endswith("s") and len(token) > 3:
+            token = token[:-1]
+        tokens.append(token)
+    return tokens
 
 
 # ---------------------------------------------------------------------------

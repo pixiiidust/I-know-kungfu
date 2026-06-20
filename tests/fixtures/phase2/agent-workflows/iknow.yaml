@@ -1,0 +1,36 @@
+wiki:
+  id: agent-workflows
+  name: Agent Workflows
+  description: Pixoid/Tinker/Quill/Boba operating model, Hermes Mission Control, route governance, memory boundaries, context handoffs, Knowledge Pack Routing, agent entrypoint meshes, static retrieval/eval gates, self-improving agent systems, and workflow reliability practices.
+  version: 0.1.0
+  scope:
+    - Pixoid/Tinker/Quill/Boba operating model
+    - Hermes Mission Control
+    - route governance
+    - memory boundaries
+    - context handoffs
+    - Knowledge Pack Routing
+    - agent entrypoint meshes
+    - static retrieval/eval gates
+    - self-improving agent systems
+    - workflow reliability practices
+  non_scope:
+    - Product case studies except where they demonstrate agent workflow mechanics
+    - Low-level local AI infrastructure unless it affects workflow execution
+    - Public wiki publishing mechanics except where they define agent routing contracts
+    - Daily Notes scratch chronology unless explicitly promoted
+  sources:
+    - src
+  include:
+    - "*.md"
+  exclude: []
+  license: CC-BY-4.0
+  maintainer: Jamie (Pixoid Crew)
+  provenance: https://pixi.wiki/agent-workflows
+  freshness: "2026-06-19"
+  trust_state: draft
+  publication: private
+  entry_points:
+    - llms.txt
+    - index.json
+    - raw

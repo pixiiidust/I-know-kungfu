@@ -117,6 +117,8 @@ def _build_kb_json(manifest: SourceManifest) -> Dict[str, Any]:
         "maintainer": manifest.maintainer,
         "provenance": manifest.provenance,
         "freshness": manifest.freshness,
+        "trust_state": manifest.trust_state,
+        "publication": manifest.publication,
         "entry_points": manifest.entry_points,
         "total_documents": len(manifest.included),
         "total_excluded": len(manifest.excluded),

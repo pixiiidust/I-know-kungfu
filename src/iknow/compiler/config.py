@@ -54,6 +54,10 @@ class CompilerConfig:
     provenance: str = ""
     freshness: str = ""
 
+    # Trust & publication posture
+    trust_state: str = ""
+    publication: str = ""
+
     # Serving entry points
     entry_points: List[str] = field(default_factory=lambda: ["llms.txt", "index.json", "markdown"])
 
@@ -332,6 +336,10 @@ def parse_config(path: str) -> CompilerConfig:
     config.provenance = _str_or(data, "provenance", config.provenance)
     config.freshness = _str_or(data, "freshness", config.freshness)
 
+    # Trust & publication
+    config.trust_state = _str_or(data, "trust_state", config.trust_state)
+    config.publication = _str_or(data, "publication", config.publication)
+
     # Entry points
     config.entry_points = _str_list(data, "entry_points") or ["llms.txt", "index.json", "markdown"]
 
@@ -350,6 +358,10 @@ def parse_config(path: str) -> CompilerConfig:
         config._warnings.append("Missing provenance — draft is purely local")
     if not config.freshness:
         config._warnings.append("Missing freshness date")
+    if not config.trust_state:
+        config._warnings.append("Missing trust_state — defaulting to 'draft'")
+    if not config.publication:
+        config._warnings.append("Missing publication — defaulting to 'private'")
     if not config.sources:
         config._warnings.append("No sources configured — nothing to compile")
 
