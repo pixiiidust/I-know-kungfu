@@ -38,11 +38,22 @@ http://127.0.0.1:4173/
 - Where a sample cited answer appears.
 - Where an out-of-scope refusal appears.
 
-## Static packs included
+## Synthetic demo data included
 
-- Agent Workflow Setup Pack — Verified.
-- Terminal Setup Pack — Official.
-- MCP Basics Pack — Community.
+- Agent Workflow Setup Wiki — Verified, high-confidence route.
+- Terminal Setup Wiki — Official, narrow source-owned route.
+- MCP Basics Wiki — Community, findable but review first.
+- Local Model Serving Wiki — Community, quarantined due to mixed provenance.
+
+The prototype also fakes a local inventory scan: 428 notes, 7 installed wikis, and overlap/gap/confidence/risk fields for each pack.
+
+## Interactions now wired
+
+- Search filters packs by name, maintainer, route, summary, and topic keywords.
+- Trust chips filter by All / Community / Verified / Official.
+- Selecting a pack updates fit, setup commands, harmonize diffs, scope/non-scope, cited answer, and refusal copy.
+- Surface buttons update the copyable setup block for MCP, `llms.txt`, raw Markdown, or `index.json`.
+- Copy buttons show a small toast after writing setup text to the clipboard.
 
 ## Visual direction
 
