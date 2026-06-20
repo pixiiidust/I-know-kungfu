@@ -1,0 +1,35 @@
+wiki:
+  id: ai-native-product-surfaces
+  name: AI-Native Product Surfaces
+  description: AI-native product/application surfaces, problem framing, product demos, PM case studies, planned program intelligence, myAbode, product-language frameworks, and the I-know-kungfu project.
+  version: 0.1.0
+  scope:
+    - AI-native product/application surfaces
+    - AI-native problem framing framework
+    - Product demos and PM case studies
+    - Planned program intelligence (enterprise event decision routing)
+    - myAbode (real-estate AI CRM case study)
+    - Product-language frameworks
+    - I-know-kungfu cookbook wiki project
+    - Verb-first product positioning
+    - Find-the-lock problem-first methodology
+  non_scope:
+    - Generic product management notes not involving AI-native surfaces
+    - Local model infrastructure unless relevant to product behavior
+    - Agent workflow mechanics except where they define product surfaces
+    - Daily Notes scratch chronology unless explicitly promoted
+  sources:
+    - src
+  include:
+    - "*.md"
+  exclude: []
+  license: CC-BY-4.0
+  maintainer: Pixi Product Surfaces WG
+  provenance: https://pixi.wiki/ai-native-product-surfaces
+  freshness: "2026-06-20"
+  trust_state: community
+  publication: restricted
+  entry_points:
+    - llms.txt
+    - index.json
+    - raw
