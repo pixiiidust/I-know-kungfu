@@ -6,6 +6,8 @@ cookbook list
     List all knowledge base wikis available in the static Cookbook registry.
 cookbook inspect <wiki-id>
     Show the full Wiki Contract for a registry wiki.
+cookbook export --package DIR [--package DIR ...] [--output PATH]
+    Export static Cookbook registry data from compiled wiki directories.
 fit <wiki-id> [--inventory {default|json-path}]
     Check context fit between a registry wiki and the local knowledge inventory.
 compile --config <iknow.yaml>
@@ -38,6 +40,7 @@ import sys
 
 from iknow import __version__
 from iknow.compiler import compile_draft
+from iknow.cookbook import export_cookbook_registry
 from iknow.fit import compute_fit
 from iknow.inventory import get_inventory
 from iknow.registry import registry
@@ -98,6 +101,29 @@ def build_parser() -> argparse.ArgumentParser:
     cookbook_inspect.add_argument(
         "wiki_id",
         help="Registry wiki identifier (e.g. agent_workflow_setup).",
+    )
+
+    cookbook_export = cookbook_sub.add_parser(
+        "export",
+        help="Export static Cookbook registry data from compiled wiki directories.",
+    )
+    cookbook_export.add_argument(
+        "--package",
+        action="append",
+        dest="package_dirs",
+        default=[],
+        help=(
+            "Path to a compiled wiki directory (can be used multiple times). "
+            "Each directory should contain kb.json, index.json, etc."
+        ),
+    )
+    cookbook_export.add_argument(
+        "--output",
+        default="prototype/cookbook-serving/data/cookbook-registry.json",
+        help=(
+            "Output path for the exported JSON file "
+            "(default: prototype/cookbook-serving/data/cookbook-registry.json)."
+        ),
     )
 
     # --- fit -----------------------------------------------------------------
@@ -301,9 +327,60 @@ def _cmd_cookbook(args: argparse.Namespace) -> int:
                 print(f"  - {w}")
         return 0
 
+    elif action == "export":
+        return _cmd_cookbook_export(args)
+
     else:
-        print("Usage: iknow cookbook {list|inspect}", file=sys.stderr)
+        print("Usage: iknow cookbook {list|inspect|export}", file=sys.stderr)
         return 1
+
+
+def _cmd_cookbook_export(args: argparse.Namespace) -> int:
+    """Handle ``cookbook export`` — export static registry data."""
+    if not args.package_dirs:
+        print(
+            "Error: at least one --package directory is required. "
+            "Example:\n"
+            "  iknow cookbook export "
+            "--package .kungfu/drafts/agent-workflows "
+            "--package .kungfu/drafts/ai-native-product-surfaces",
+            file=sys.stderr,
+        )
+        return 1
+
+    output_path = args.output
+
+    for pkg in args.package_dirs:
+        if not os.path.isdir(pkg):
+            print(
+                f"Error: package directory not found: {pkg}",
+                file=sys.stderr,
+            )
+            return 1
+        kb_path = os.path.join(pkg, "kb.json")
+        if not os.path.isfile(kb_path):
+            print(
+                f"Error: package directory {pkg!r} has no kb.json — "
+                "is it a compiled wiki directory?",
+                file=sys.stderr,
+            )
+            return 1
+
+    result = export_cookbook_registry(
+        wiki_dirs=args.package_dirs,
+        output_path=output_path,
+    )
+
+    count = len(result["wikis"])
+    print(f"Exported {count} wiki(s) to {output_path}")
+    for wiki in result["wikis"]:
+        listing_flag = "✓" if wiki["listing_eligible"] else "✗"
+        rec_flag = "✓" if wiki["recommendation_eligible"] else "✗"
+        print(
+            f"  {wiki['id']:30s}  {wiki['badge']:20s}  "
+            f"listing={listing_flag}  recommendation={rec_flag}"
+        )
+    return 0
 
 
 def _cmd_fit(args: argparse.Namespace) -> int:
