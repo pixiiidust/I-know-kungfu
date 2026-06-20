@@ -70,7 +70,7 @@ iknow --version
 
 ## Run the end-to-end demo
 
-The demo uses bundled fixtures only. No network access is required.
+The original MVP demo uses bundled fixtures only. No network access is required.
 
 ```bash
 python scripts/demo.py
@@ -88,6 +88,22 @@ Cookbook list
 → refuse an out-of-scope query
 → read a cited source document
 ```
+
+## Run the Phase 2 real-data demo
+
+The real-data Cookbook walkthrough uses the Phase 2 packaged wiki fixtures and generated registry data:
+
+```bash
+python scripts/phase2_real_data_demo.py
+```
+
+It proves:
+
+```text
+inspect real package → fit check → export registry → install/route → serve/search/read → cited answer → refusal
+```
+
+Details: [`docs/demo/phase2-real-data-cookbook.md`](docs/demo/phase2-real-data-cookbook.md)
 
 ## CLI quick reference
 
