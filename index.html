@@ -77,37 +77,90 @@
     <p class="note">Throwaway static prototype. Fake: backend, auth, payments, upload, MCP process, real search. Proves: pack detail, trust badges, scope/non-scope, context fit, surfaces, setup blocks, cited answer, refusal.</p>
   </main>
   <script>
-    const demo={
-      inventory:{vault:'Jamie local KB',notes:428,wikis:7,topics:['Hermes agent workflows','Pixi Wiki publishing','MCP routing','local model serving'],lastScan:'demo scan · 4m ago'},
-      packs:[
-        {id:'agent-workflow-setup',no:'001',name:'Agent Workflow Setup Wiki',status:'Verified',maintainer:'Pixi Wiki maintainers',version:'2026.06.3',updated:'2h ago',fit:'Recommended',summary:'Turn scattered setup notes into a routed first-agent workflow with clear handoff boundaries.',scope:['Hermes-style workflow setup','role boundaries and handoffs','local-first pack routing','failure/refusal examples'],non:['hardware buying','hosted marketplace/auth','unrelated coding tasks'],overlap:'62%',gap:'74%',confidence:'High',risk:'low duplicate risk',route:'Install as routed setup context; prefer for workflow setup questions.',q:'How should I set up a first Hermes agent workflow?',a:'Start with one orchestrator and one builder. Keep durable truth in docs/issues, then expose setup references through MCP or llms.txt. ',cite:'agent-workflows/wiki/concepts/knowledge-pack-routing.md',keywords:['agent','workflow','hermes','setup','pixi wiki']},
-        {id:'terminal-setup',no:'002',name:'Terminal Setup Wiki',status:'Official',maintainer:'Terminal docs team',version:'2026.05.1',updated:'1d ago',fit:'Route with care',summary:'Install, configure, and troubleshoot a terminal tool from source-owned docs.',scope:['install and configure terminal','common first-run troubleshooting','support link routing','health checks'],non:['general shell scripting','billing/account support','private dotfile inspection'],overlap:'18%',gap:'86%',confidence:'Medium',risk:'source-owned but narrow',route:'Good for terminal onboarding; do not route generic shell questions here.',q:'How do I configure the terminal after first install?',a:'Confirm default shell, set the profile/theme, then run the built-in health check before importing advanced dotfiles. ',cite:'terminal-setup/raw/getting-started/configuration.md',keywords:['terminal','official','install','config']},
-        {id:'mcp-basics',no:'003',name:'MCP Basics Wiki',status:'Community',maintainer:'Community contributors',version:'0.9.4',updated:'3d ago',fit:'Findable only',summary:'Understand MCP vocabulary and when a pack should expose tools/resources.',scope:['client/server/resource/tool terms','MCP vs llms.txt routing','surface choice tradeoffs'],non:['production security review','exact spec authority','client-specific guarantees'],overlap:'09%',gap:'63%',confidence:'Low',risk:'community source, needs review',route:'Discoverable, but ask before trusting for implementation details.',q:'When should a Knowledge Pack expose MCP?',a:'Use MCP when agents need inspect/search/read tools and metadata instead of one static context file. ',cite:'mcp-basics/raw/surfaces/mcp-vs-llms.md',keywords:['mcp','community','resources','tools']},
-        {id:'local-model-serving',no:'004',name:'Local Model Serving Wiki',status:'Community',maintainer:'Hardware-aware cookbook crew',version:'0.3.0',updated:'6h ago',fit:'Quarantine',summary:'Collects local model serving notes, but conflicts with Jamie’s current source inventory and needs provenance review.',scope:['Ollama/vLLM comparison notes','GPU memory vocabulary','local-only serving cautions'],non:['hardware purchase advice','cloud deployment promises','benchmark claims without source'],overlap:'41%',gap:'29%',confidence:'Low',risk:'mixed provenance',route:'Do not install globally. Keep as candidate source until citations and benchmark boundaries are reviewed.',q:'Can I serve a 7B model locally?',a:'Maybe, but this wiki is not verified enough to answer as truth. Use it as a reading list and cite source docs directly. ',cite:'local-model-serving/raw/review-needed/serving-basics.md',keywords:['model','gpu','ollama','vllm','hardware']}
-      ]
-    };
-    const packs=demo.packs;
+    let packs=[];
+    let loading=true;
+
+    function adaptWiki(w,idx){
+      const fitMap={
+        'local-draft':'Local Draft',
+        'review-before-install':'Review before install',
+        'recommended':'Recommended',
+        'inspect-only':'Findable only'
+      };
+      const fit=fitMap[w.route_recommendation]||'Inspect only';
+      const confidence=w.recommendation_eligible?'High':'Low';
+      const risk=w.recommendation_blockers&&w.recommendation_blockers.length
+        ?w.recommendation_blockers[0].toLowerCase().slice(0,50)
+        :'review recommended';
+      const route=w.route_recommendation==='local-draft'
+        ?'Inspect and run locally; do not share widely.'
+        :w.route_recommendation==='review-before-install'
+        ?'Review scope and provenance before installing as routed context.'
+        :w.route_recommendation==='recommended'
+        ?'Trusted source; safe to install as routed context.'
+        :'Discoverable, but verify before trusting for implementation.';
+      const firstScope=w.scope&&w.scope[0]||'this topic';
+      const citePath=w.llms_txt_path||w.kb_json_path||'unknown';
+      return {
+        id:w.id,
+        no:String(idx+1).padStart(3,'0'),
+        name:w.name,
+        status:w.badge,
+        trust_state:w.trust_state,
+        maintainer:w.maintainer||'',
+        version:w.version||'',
+        updated:w.freshness||'unknown',
+        fit:fit,
+        summary:w.summary||'',
+        scope:w.scope||[],non:w.non_scope||[],
+        overlap:'0%',
+        gap:w.document_count>0?Math.min(w.document_count*12,90)+'%':'0%',
+        confidence:confidence,
+        risk:risk,
+        route:route,
+        q:'How does this wiki cover '+firstScope+'?',
+        a:'This wiki ("'+w.name+'") covers '+firstScope+' as a core scope item. It has '+w.document_count+' source documents, route recommendation "'+w.route_recommendation+'", and trust state "'+w.trust_state+'". Cite the pack contract for authoritative details. ',
+        cite:citePath,
+        keywords:(w.scope||[]).slice(0,6).map(function(s){return s.split(' ')[0].toLowerCase()}),
+        document_count:w.document_count||0
+      };
+    }
+
+    async function loadRegistry(){
+      try{
+        const resp=await fetch('data/cookbook-registry.json');
+        if(!resp.ok)throw new Error('HTTP '+resp.status);
+        const reg=await resp.json();
+        packs=(reg.wikis||[]).map(adaptWiki);
+      }catch(e){
+        console.error('Failed to load cookbook registry:',e);
+        packs=[];
+      }finally{
+        loading=false;
+        activate();
+      }
+    }
     const surfaces={mcp:['MCP','iknow inspect ${id}\niknow install ${id} --to ~/.iknow/installed\niknow serve ${id} --mcp','Best for search/read/cite/refuse tools.'],llms:['llms.txt','curl -L cookbook.local/packs/${id}/llms.txt -o ~/.iknow/installed/${id}/llms.txt','Best as compact routing entrypoint.'],raw:['Raw Markdown','iknow install ${id} --include raw\nopen ~/.iknow/installed/${id}/raw/','Best for auditable source citations.'],index:['index.json','curl -L cookbook.local/packs/${id}/index.json | jq','Best for machine-readable trust/version metadata.']};
-    let surface='mcp', selectedId='agent-workflow-setup', filter='All', query='';
+    let surface='mcp', selectedId='', filter='All', query='';
     const $=s=>document.querySelector(s);
     const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
     const selected=()=>packs.find(p=>p.id===selectedId)||packs[0];
     const surfaceCode=(key,p)=>surfaces[key][1].replaceAll('${id}',p.id);
     function toast(msg){let t=$('#toast'); if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t)} t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),1400)}
     function flow(active){return `<div class="flow"><div class="step ${active===1?'active':''}"><span class="mono">01</span><b>Find wiki</b></div><div class="step ${active===2?'active':''}"><span class="mono">02</span><b>Check fit</b></div><div class="step ${active===3?'active':''}"><span class="mono">03</span><b>Serve surface</b></div><div class="step ${active===4?'active':''}"><span class="mono">04</span><b>Harmonize diffs</b></div></div>`}
-    function visiblePacks(){return packs.filter(p=>{const okFilter=filter==='All'||p.status===filter; const hay=[p.name,p.status,p.maintainer,p.summary,p.fit,p.route,...p.keywords].join(' ').toLowerCase(); return okFilter && hay.includes(query.toLowerCase())})}
+    function visiblePacks(){return packs.filter(p=>{const okFilter=filter==='All'||p.trust_state===filter.toLowerCase(); const hay=[p.name,p.status,p.maintainer,p.summary,p.fit,p.route,...p.keywords].join(' ').toLowerCase(); return okFilter && hay.includes(query.toLowerCase())})}
     function rows(mode='full'){const list=visiblePacks(); return (list.length?list.map(p=>`<div class="row packrow ${p.id===selectedId?'selected':''}" data-pack="${p.id}"><div class="num">${p.no}</div><div class="cell"><div class="tag">${p.status} · ${p.maintainer} · ${p.version}</div><div class="title">${p.name}</div><p class="desc">${p.summary}</p><div class="statusline"><span class="mini">${p.updated}</span><span class="mini">${p.confidence} confidence</span><span class="mini">${p.risk}</span></div></div><div class="cell stop"><b>${p.fit}</b><p>${p.route}</p></div><div class="cell localfit"><b>${p.overlap} overlap</b><p>${p.gap} gaps filled</p></div><div class="actioncol"><button class="copy" type="button" data-action="select" data-pack="${p.id}">${mode==='serve'?'Serve':'Select'}</button></div></div>`).join(''):`<div class="row"><div class="num">—</div><div class="cell"><div class="title">No matching wiki packs</div><p class="desc">Try All, Verified, Official, Community, or search for “MCP”, “terminal”, “model”, or “workflow”.</p></div><div></div><div></div><div></div></div>`)}
-    function packTable(mode='full'){return `<section id="packs"><div class="filters"><label class="search">⌕ <input id="packSearch" value="${esc(query)}" placeholder="Search packs, maintainers, or topics" /></label><div class="chips">${['All','Community','Verified','Official'].map(x=>`<button class="chip ${filter===x?'active':''}" data-filter="${x}" type="button">${x}</button>`).join('')}</div></div><div class="meta"><span>Showing ${visiblePacks().length} of ${packs.length} synthetic packs</span><span>${demo.inventory.lastScan}: ${demo.inventory.notes} notes · ${demo.inventory.wikis} installed wikis</span></div><div class="table"><div class="row head"><div class="th">No.</div><div class="th">Pack</div><div class="th">Fit / route</div><div class="th localfit">Local fit</div><div class="th actioncol">Action</div></div>${rows(mode)}</div></section>`}
+    function packTable(mode='full'){return `<section id="packs"><div class="filters"><label class="search">⌕ <input id="packSearch" value="${esc(query)}" placeholder="Search packs, maintainers, or topics" /></label><div class="chips">${['All','Draft','Community','Verified','Official'].map(x=>`<button class="chip ${filter===x?'active':''}" data-filter="${x}" type="button">${x}</button>`).join('')}</div></div><div class="meta"><span>Showing ${visiblePacks().length} of ${packs.length} registry packs</span><span>${packs.reduce((s,p)=>s+p.document_count,0)} documents . ${packs.length} wikis in registry</span></div><div class="table"><div class="row head"><div class="th">No.</div><div class="th">Pack</div><div class="th">Fit / route</div><div class="th localfit">Local fit</div><div class="th actioncol">Action</div></div>${rows(mode)}</div></section>`}
     function detail(){const p=selected();return `<section class="section"><h2>${p.name}</h2><p class="section-sub">Selected because it has <b>${p.overlap}</b> overlap with local notes and fills <b>${p.gap}</b> of the demo gap set. Status: ${p.status}; confidence: ${p.confidence}.</p><div class="grid2"><div class="panel"><h3>Scope</h3><ul>${p.scope.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="panel"><h3>Non-scope</h3><ul>${p.non.map(x=>`<li>${x}</li>`).join('')}</ul></div></div></section>`}
-    function fitCheck(){const p=selected();return `<section class="section"><h2>Check local fit before install</h2><p class="section-sub">Variant C puts the “should I trust and route this?” decision before setup copy.</p><div class="decision"><div class="panel"><span class="mono">Local inventory comparison</span><h3>${p.overlap} overlap · ${p.gap} gaps filled</h3><div class="meter"><span style="width:${p.overlap}"></span></div><p class="desc"><strong>Recommendation:</strong> ${p.route}</p><p class="desc"><strong>Safe default:</strong> ${p.fit==='Quarantine'?'do not install globally; review provenance first.':'install as routed context, not as global truth.'}</p><div class="statusline">${demo.inventory.topics.map(x=>`<span class="mini">${x}</span>`).join('')}</div></div><div class="panel"><span class="mono">Human approval point</span><h3>Approve one surface, not the whole pack forever.</h3><ul><li>review scope and non-scope first</li><li>choose MCP for agent tools or llms.txt for routing</li><li>keep raw Markdown visible for citations</li><li>harmonize overlap instead of duplicating local notes</li></ul></div></div></section>`}
+    function fitCheck(){const p=selected();const topics=(p.scope||[]).slice(0,4);return `<section class="section"><h2>Check local fit before install</h2><p class="section-sub">Variant A puts the “should I trust and route this?” decision before setup copy.</p><div class="decision"><div class="panel"><span class="mono">Local inventory comparison</span><h3>${p.overlap} overlap · ${p.gap} gaps filled</h3><div class="meter"><span style="width:${p.overlap}"></span></div><p class="desc"><strong>Recommendation:</strong> ${p.route}</p><p class="desc"><strong>Safe default:</strong> ${p.fit==='Quarantine'||p.fit==='Local Draft'?'do not install globally; review provenance first.':'install as routed context, not as global truth.'}</p><div class="statusline">${topics.length?topics.map(x=>`<span class="mini">${x}</span>`).join(''):''}</div></div><div class="panel"><span class="mono">Human approval point</span><h3>Approve one surface, not the whole pack forever.</h3><ul><li>review scope and non-scope first</li><li>choose MCP for agent tools or llms.txt for routing</li><li>keep raw Markdown visible for citations</li><li>harmonize overlap instead of duplicating local notes</li></ul></div></div></section>`}
     function serve(){const p=selected();return `<section id="serve" class="section"><h2>Choose serving surface</h2><p class="section-sub">Each surface answers a different “how will my knowledge base or agent consume this wiki?” question.</p><div class="surfacebar">${Object.entries(surfaces).map(([k,v])=>`<button class="surface" type="button" aria-pressed="${k===surface}" data-surface="${k}"><span class="mono">Surface</span><h3>${v[0]}</h3><p class="desc">${v[2]}</p></button>`).join('')}</div><div class="setup"><div class="panel"><span class="mono">Copyable setup · ${p.id}</span><pre class="code" id="setupCode">${surfaceCode(surface,p)}</pre><button class="copy" type="button" data-action="copy-setup">Copy command</button></div><div class="panel"><h3>Knowledge base can now</h3><ul><li>inspect pack contract and version</li><li>search/read source pages</li><li>cite exact Markdown paths</li><li>flag overlap or out-of-scope use</li></ul></div></div></section>`}
-    function harmonize(){const p=selected();return `<section class="section"><h2>Harmonize overlap</h2><p class="section-sub">Synthetic diffs show what would be reviewed before merging a wiki into Jamie’s local KB.</p><div class="table"><div class="diffrow"><span class="pill warn">Overlap</span><div><b>${p.scope[0]}</b><p>Local notes already cover part of this. Pack adds a routed example and explicit refusal boundary.</p></div><div><span class="pill">Merge as route</span></div></div><div class="diffrow"><span class="pill">Gap</span><div><b>${p.scope[1]||'Surface choice examples'}</b><p>The pack provides missing source docs, setup commands, and citation paths.</p></div><div><span class="pill">Install</span></div></div><div class="diffrow"><span class="pill">Boundary</span><div><b>${p.non[0]}</b><p>Marked as non-scope so agents do not answer adjacent questions from the wrong wiki.</p></div><div><span class="pill warn">Do not route</span></div></div></div></section>`}
+    function harmonize(){const p=selected();return `<section class="section"><h2>Harmonize overlap</h2><p class="section-sub">Registry diffs show what would be reviewed before merging a wiki into Jamie’s local KB.</p><div class="table"><div class="diffrow"><span class="pill warn">Overlap</span><div><b>${p.scope[0]}</b><p>Local notes already cover part of this. Pack adds a routed example and explicit refusal boundary.</p></div><div><span class="pill">Merge as route</span></div></div><div class="diffrow"><span class="pill">Gap</span><div><b>${p.scope[1]||'Surface choice examples'}</b><p>The pack provides missing source docs, setup commands, and citation paths.</p></div><div><span class="pill">Install</span></div></div><div class="diffrow"><span class="pill">Boundary</span><div><b>${p.non[0]}</b><p>Marked as non-scope so agents do not answer adjacent questions from the wrong wiki.</p></div><div><span class="pill warn">Do not route</span></div></div></div></section>`}
     function proof(){const p=selected();return `<section id="proof" class="section"><h2>Proof of behavior</h2><div class="proof"><div class="panel"><h3>Sample cited answer</h3><div class="quote"><b>User:</b> ${p.q}<br><br>${p.a}<span class="cite">${p.cite}</span></div></div><div class="panel"><h3>Out-of-scope refusal</h3><div class="quote refuse"><b>User:</b> ${p.non[0]}?<br><br>I should not answer that from ${p.name}. This pack scopes to ${p.scope[0]}; route to a better source or ask for approval to use another wiki.</div></div></div></section>`}
     function callout(title,copy,code){return `<section class="callout"><div><span class="mono">Selected wiki pack</span><h2>${title}</h2><p>${copy}</p></div><div><div class="mono">Setup sketch</div><pre class="code">${code}</pre></div></section>`}
-    function variantA(){return `${callout('Add a trusted wiki to your knowledge base.','Start from the pack contract, then copy the surface your tools can consume.','iknow inspect '+selectedId+'\niknow serve '+selectedId+' --mcp')}${flow(1)}${packTable()}${detail()}${serve()}${proof()}`}
+    function variantA(){if(loading)return '<div class="section" style="padding:60px 0;text-align:center;color:var(--muted)"><span class="mono">Loading registry data...</span></div>';if(!packs.length)return '<div class="section" style="padding:60px 0;text-align:center;color:var(--muted)"><span class="mono">No registry data loaded. Check that data/cookbook-registry.json exists.</span></div>';const p=selected();return `${callout('Add a trusted wiki to your knowledge base.','Start from the pack contract, then copy the surface your tools can consume.','iknow inspect '+p.id+'\niknow serve '+p.id+' --mcp')}${flow(1)}${packTable()}${detail()}${serve()}${proof()}`}
     function wire(){document.querySelectorAll('.surface').forEach(b=>b.onclick=()=>{surface=b.dataset.surface;activate()});document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;activate()});document.querySelectorAll('[data-pack]').forEach(el=>el.onclick=e=>{e.stopPropagation();selectedId=el.dataset.pack;activate();toast('Selected '+selected().name)});const search=$('#packSearch'); if(search){search.focus({preventScroll:true}); search.setSelectionRange(search.value.length,search.value.length); search.oninput=e=>{query=e.target.value;activate()}}document.querySelectorAll('[data-action="copy-setup"]').forEach(b=>b.onclick=async()=>{await navigator.clipboard?.writeText($('#setupCode')?.innerText||'');toast('Copied setup command')})}
     function activate(){document.querySelectorAll('.variant').forEach(x=>{x.classList.remove('active');x.innerHTML=''});const target=$('#variantA');target.innerHTML=variantA();target.classList.add('active');$('#variantEyebrow').textContent='UI prototype · Variant A selected';wire()}
-    $('#copyTop').onclick=async()=>{await navigator.clipboard?.writeText($('#setupCode')?.innerText||'');toast('Copied setup command')};$('#modeToggle').onclick=()=>{document.body.classList.toggle('dark');$('#modeToggle').textContent=document.body.classList.contains('dark')?'Light':'Dark'};activate();
+    $('#copyTop').onclick=async()=>{await navigator.clipboard?.writeText($('#setupCode')?.innerText||'');toast('Copied setup command')};$('#modeToggle').onclick=()=>{document.body.classList.toggle('dark');$('#modeToggle').textContent=document.body.classList.contains('dark')?'Light':'Dark'};loadRegistry();
   </script>
 </body>
 </html>

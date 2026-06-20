@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "exported_at": "2026-06-20T17:01:05Z",
+  "wikis": [
+    {
+      "id": "agent-workflows",
+      "name": "Agent Workflows",
+      "description": "Pixoid/Tinker/Quill/Boba operating model, Hermes Mission Control, route governance, memory boundaries, context handoffs, Knowledge Pack Routing, agent entrypoint meshes, static retrieval/eval gates, self-improving agent systems, and workflow reliability practices.",
+      "version": "0.1.0",
+      "trust_state": "draft",
+      "publication": "private",
+      "maintainer": "Jamie (Pixoid Crew)",
+      "license": "CC-BY-4.0",
+      "provenance": "https://pixi.wiki/agent-workflows",
+      "freshness": "2026-06-19",
+      "scope": [
+        "Pixoid/Tinker/Quill/Boba operating model",
+        "Hermes Mission Control",
+        "route governance",
+        "memory boundaries",
+        "context handoffs",
+        "Knowledge Pack Routing",
+        "agent entrypoint meshes",
+        "static retrieval/eval gates",
+        "self-improving agent systems",
+        "workflow reliability practices"
+      ],
+      "non_scope": [
+        "Product case studies except where they demonstrate agent workflow mechanics",
+        "Low-level local AI infrastructure unless it affects workflow execution",
+        "Public wiki publishing mechanics except where they define agent routing contracts",
+        "Daily Notes scratch chronology unless explicitly promoted"
+      ],
+      "entry_points": [
+        "llms.txt",
+        "index.json",
+        "raw"
+      ],
+      "document_count": 4,
+      "kb_json_path": "packages/agent-workflows/kb.json",
+      "index_json_path": "packages/agent-workflows/index.json",
+      "llms_txt_path": "packages/agent-workflows/llms.txt",
+      "listing_eligible": true,
+      "listing_blockers": [],
+      "listing_warnings": [],
+      "recommendation_eligible": false,
+      "recommendation_blockers": [
+        "Trust state is 'Community' — recommendation requires 'Verified' or 'Official'"
+      ],
+      "recommendation_warnings": [],
+      "route_recommendation": "local-draft",
+      "badge": "Draft",
+      "summary": "Pixoid/Tinker/Quill/Boba operating model, Hermes Mission Control, route governance, memory boundaries, context..."
+    },
+    {
+      "id": "ai-native-product-surfaces",
+      "name": "AI-Native Product Surfaces",
+      "description": "AI-native product/application surfaces, problem framing, product demos, PM case studies, planned program intelligence, myAbode, product-language frameworks, and the I-know-kungfu project.",
+      "version": "0.1.0",
+      "trust_state": "community",
+      "publication": "restricted",
+      "maintainer": "Pixi Product Surfaces WG",
+      "license": "CC-BY-4.0",
+      "provenance": "https://pixi.wiki/ai-native-product-surfaces",
+      "freshness": "2026-06-20",
+      "scope": [
+        "AI-native product/application surfaces",
+        "AI-native problem framing framework",
+        "Product demos and PM case studies",
+        "Planned program intelligence (enterprise event decision routing)",
+        "myAbode (real-estate AI CRM case study)",
+        "Product-language frameworks",
+        "I-know-kungfu cookbook wiki project",
+        "Verb-first product positioning",
+        "Find-the-lock problem-first methodology"
+      ],
+      "non_scope": [
+        "Generic product management notes not involving AI-native surfaces",
+        "Local model infrastructure unless relevant to product behavior",
+        "Agent workflow mechanics except where they define product surfaces",
+        "Daily Notes scratch chronology unless explicitly promoted"
+      ],
+      "entry_points": [
+        "llms.txt",
+        "index.json",
+        "raw"
+      ],
+      "document_count": 6,
+      "kb_json_path": "packages/ai-native-product-surfaces/kb.json",
+      "index_json_path": "packages/ai-native-product-surfaces/index.json",
+      "llms_txt_path": "packages/ai-native-product-surfaces/llms.txt",
+      "listing_eligible": true,
+      "listing_blockers": [],
+      "listing_warnings": [],
+      "recommendation_eligible": false,
+      "recommendation_blockers": [
+        "Trust state is 'Community' — recommendation requires 'Verified' or 'Official'"
+      ],
+      "recommendation_warnings": [],
+      "route_recommendation": "review-before-install",
+      "badge": "Community (Restricted)",
+      "summary": "AI-native product/application surfaces, problem framing, product demos, PM case studies, planned program intelligence,..."
+    }
+  ]
+}
