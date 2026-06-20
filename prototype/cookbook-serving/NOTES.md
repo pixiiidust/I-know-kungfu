@@ -69,13 +69,17 @@ Adapted the dense editorial/database feel Jamie pointed to from Forward Future L
 
 ## Current smell-test read
 
-Corrected after Jamie's review: the UI branch of `/prototype` should expose multiple structurally different variants with a bottom switcher, not one polished screen.
+Jamie chose Variant A as the surface to solidify first. The prototype now removes the A/B/C switcher and defaults to the single Library flow:
 
-Current variants:
+```text
+Hero
+→ selected wiki setup panel
+→ four-step flow rail
+→ searchable/filterable wiki rows
+→ detail / serve / proof
+```
 
-- `?variant=A` — Library flow: closest to Forward Future Loop Library. Hero, feature install block, four-step flow rail, filters, structured wiki rows, then detail/serve/proof.
-- `?variant=B` — Guided sequence: A-derived variant with the same library/table base, but stronger step-by-step framing for pick wiki → check fit → choose entry point → prove/refuse.
-- `?variant=C` — Serve after fit: Jamie's preferred variant. Wiki table appears immediately after the hero, then a local-fit decision panel, serving entry point/setup, harmonize overlap table, scope/non-scope, and proof/refusal.
+The selected-wiki setup panel uses a light surface instead of the red-orange accent background. The accent now acts as a small inset marker so the container does not clash with the text/code block.
 
 Product-copy correction from Jamie: this is not about Loop Library-style prompts. The relevant similarity is the community-sharing/listing approach. The actual product frame is finding useful knowledge base wikis to add to your own knowledge base, comparing local fit, serving through a chosen entry point, and harmonizing/integrating diffs when the new wiki overlaps with existing knowledge.
 
