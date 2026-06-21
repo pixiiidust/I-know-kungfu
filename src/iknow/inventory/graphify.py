@@ -52,13 +52,41 @@ _GENERATED_PATH_PARTS = {
 }
 
 _FILE_LABEL_RE = re.compile(r"^[\w.-]+\.[A-Za-z0-9]+$")
+MAX_GRAPH_BYTES = 10 * 1024 * 1024
 
 
 def load_graphify_inventory(path: str) -> LocalKnowledgeInventory:
-    """Load a Graphify ``graph.json`` file and derive local inventory evidence."""
+    """Load a Graphify ``graph.json`` file and derive local inventory evidence.
+
+    Raises clear standard exceptions for CLI callers to render:
+    ``FileNotFoundError`` for missing files, ``ValueError`` for oversized or
+    unsupported schema, and ``json.JSONDecodeError`` for invalid JSON.
+    """
+    if not os.path.isfile(path):
+        raise FileNotFoundError(path)
+    size = os.path.getsize(path)
+    if size > MAX_GRAPH_BYTES:
+        raise ValueError(
+            f"Graphify graph is too large ({size} bytes; max {MAX_GRAPH_BYTES} bytes)"
+        )
     with open(path, "r", encoding="utf-8") as f:
         graph = json.load(f)
+    _validate_graphify_graph_shape(graph)
     return inventory_from_graphify_graph(graph)
+
+
+def _validate_graphify_graph_shape(graph: object) -> None:
+    if not isinstance(graph, dict):
+        raise ValueError("Unsupported Graphify graph schema: root must be a JSON object")
+    if "nodes" not in graph:
+        raise ValueError("Unsupported Graphify graph schema: missing 'nodes' list")
+    if "links" not in graph and "edges" not in graph:
+        raise ValueError("Unsupported Graphify graph schema: missing 'links' or 'edges' list")
+    if not isinstance(graph.get("nodes"), list):
+        raise ValueError("Unsupported Graphify graph schema: 'nodes' must be a list")
+    edge_value = graph.get("links", graph.get("edges"))
+    if not isinstance(edge_value, list):
+        raise ValueError("Unsupported Graphify graph schema: edges must be a list")
 
 
 def inventory_from_graphify_graph(graph: dict[str, Any]) -> LocalKnowledgeInventory:

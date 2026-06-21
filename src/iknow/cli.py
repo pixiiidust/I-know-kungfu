@@ -8,7 +8,7 @@ cookbook inspect <wiki-id>
     Show the full Wiki Contract for a registry wiki.
 cookbook export --package DIR [--package DIR ...] [--output PATH]
     Export static Cookbook registry data from compiled wiki directories.
-fit <wiki-id> [--inventory {default|json-path}]
+fit <wiki-id> [--inventory {default|json-path}] [--inventory-graph graphify-out/graph.json]
     Check context fit between a registry wiki and the local knowledge inventory.
 compile --config <iknow.yaml>
     Compile a private draft wiki from configuration and local Markdown sources.
@@ -42,7 +42,7 @@ from iknow import __version__
 from iknow.compiler import compile_draft
 from iknow.cookbook import export_cookbook_registry
 from iknow.fit import compute_fit
-from iknow.inventory import get_inventory
+from iknow.inventory import get_inventory, load_graphify_inventory
 from iknow.registry import registry
 from iknow.serving import list_wikis, read_document, search_wiki
 from iknow.store import (
@@ -141,6 +141,14 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Inventory source: 'default' for bundled fixture, "
             "or a path to a JSON inventory file."
+        ),
+    )
+    fit_parser.add_argument(
+        "--inventory-graph",
+        default=None,
+        help=(
+            "Path to a local Graphify graph.json file to derive fit evidence. "
+            "Read-only; does not run Graphify, hooks, servers, or network calls."
         ),
     )
 
@@ -386,7 +394,23 @@ def _cmd_cookbook_export(args: argparse.Namespace) -> int:
 def _cmd_fit(args: argparse.Namespace) -> int:
     """Handle ``fit <wiki-id>`` — compare registry wiki vs local inventory."""
     # Load inventory
-    if args.inventory == "default":
+    if args.inventory_graph:
+        if args.inventory != "default":
+            print(
+                "Error: use either --inventory or --inventory-graph, not both.",
+                file=sys.stderr,
+            )
+            return 1
+        try:
+            inventory = load_graphify_inventory(args.inventory_graph)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            print(
+                f"Failed to load Graphify inventory graph from "
+                f"{args.inventory_graph!r}: {exc}",
+                file=sys.stderr,
+            )
+            return 1
+    elif args.inventory == "default":
         inventory = get_inventory()
     else:
         try:
