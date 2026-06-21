@@ -195,4 +195,5 @@ Start with:
 - [`docs/PRD.md`](docs/PRD.md) — current MVP requirements
 - [`docs/roadmap/phase2-real-data-productization.md`](docs/roadmap/phase2-real-data-productization.md) — Phase 2 boundary and issue sequence
 - [`docs/adr/0001-knowledge-base-wiki-is-core-object.md`](docs/adr/0001-knowledge-base-wiki-is-core-object.md) — vocabulary decision
+- [`docs/adr/0002-graphify-context-fit-adapter.md`](docs/adr/0002-graphify-context-fit-adapter.md) — Graphify adapter boundary decision
 - [`prototype/cookbook-serving/NOTES.md`](prototype/cookbook-serving/NOTES.md) — prototype notes
