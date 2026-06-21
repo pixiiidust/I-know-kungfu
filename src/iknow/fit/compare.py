@@ -85,6 +85,14 @@ def compute_fit(
                 f"in your local inventory's scope."
             )
 
+    matched_contexts = _matched_graph_context_ids(candidate_scope, inventory)
+    if len(matched_contexts) > 1:
+        boundary_warnings.append(
+            "Candidate scope spans multiple local graph contexts: "
+            + ", ".join(matched_contexts)
+            + ". Route with care and preserve bounded-context separation."
+        )
+
     # -- Merge risk ---------------------------------------------------------
     total = len(candidate.scope)
     gap_percentage = len(gaps) / total if total > 0 else 0.0
@@ -142,6 +150,7 @@ def _tokens(value: str) -> set[str]:
     stopwords = {
         "and", "or", "the", "a", "an", "to", "of", "for", "with", "in", "on",
         "patterns", "pattern", "concepts", "concept", "definitions", "definition",
+        "path", "paths", "file", "files", "source", "sources",
     }
     return {
         token
@@ -176,6 +185,28 @@ def _related_graph_evidence_sources(
         if candidate_tokens & inventory_tokens:
             sources.extend(inventory_sources)
     return _dedupe(sources)
+
+
+def _matched_graph_context_ids(
+    candidate_scope: List[str],
+    inventory: LocalKnowledgeInventory,
+) -> List[str]:
+    """Return Graphify inventory item IDs touched by exact or related evidence."""
+    contexts: List[str] = []
+    for item in inventory.items:
+        if not item.id.startswith("graphify_community_"):
+            continue
+        item_scope_norms = {_normalize(topic) for topic in item.scope}
+        item_scope_tokens = {topic: _tokens(topic) for topic in item.scope}
+        for candidate_topic in candidate_scope:
+            candidate_norm = _normalize(candidate_topic)
+            candidate_tokens = _tokens(candidate_topic)
+            exact = candidate_norm in item_scope_norms
+            related = any(candidate_tokens & tokens for tokens in item_scope_tokens.values())
+            if exact or related:
+                contexts.append(item.id)
+                break
+    return _dedupe(contexts)
 
 
 def _dedupe(values: List[str]) -> List[str]:
