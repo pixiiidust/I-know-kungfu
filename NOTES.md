@@ -100,4 +100,4 @@ Forward Future Loop Library design cues used:
 - muted body copy with strong title scan anchors;
 - small consistent action buttons.
 
-Current design direction: continue from Variant C unless Jamie says otherwise. Keep the Forward Future light/dark color scheme, but avoid copying product language about loops/prompts.
+Current design direction: continue from Variant A as the chosen surface. Older Variant C references are historical smell-test context only; do not restore the A/B/C switcher unless Jamie explicitly asks for alternate surfaces again. Keep the Forward Future light/dark color scheme, but avoid copying product language about loops/prompts.

@@ -45,12 +45,39 @@
       "listing_warnings": [],
       "recommendation_eligible": false,
       "recommendation_blockers": [
-        "Trust state is 'Community' — recommendation requires 'Verified' or 'Official'"
+        "Trust state is 'Community' \u2014 recommendation requires 'Verified' or 'Official'"
       ],
       "recommendation_warnings": [],
       "route_recommendation": "local-draft",
       "badge": "Draft",
-      "summary": "Pixoid/Tinker/Quill/Boba operating model, Hermes Mission Control, route governance, memory boundaries, context..."
+      "summary": "Pixoid/Tinker/Quill/Boba operating model, Hermes Mission Control, route governance, memory boundaries, context...",
+      "context_fit": {
+        "evidence_label": "Synthetic/demo Graphify-backed local fit evidence",
+        "source": "tests/fixtures/graphify/context_fit_graph.json",
+        "recommendation": "route_with_care",
+        "merge_risk": "medium",
+        "gap_percentage": 0.6,
+        "exact_overlap": [
+          "Knowledge Pack Routing"
+        ],
+        "graph_evidence_overlap": [
+          "agent entrypoint meshes",
+          "workflow reliability practices"
+        ],
+        "gaps": [
+          "Hermes Mission Control",
+          "memory boundaries",
+          "context handoffs"
+        ],
+        "boundary_warnings": [
+          "Graph evidence crosses agent workflow and local serving contexts; route with care and preserve bounded-context separation."
+        ],
+        "evidence_sources": [
+          "docs/agent-workflows/wiki/concepts/knowledge-pack-routing.md",
+          "docs/local-ai/wiki/concepts/agent-entrypoints.md"
+        ],
+        "trust_boundary": "Graphify evidence supports local fit only; Wiki Contract fields still govern trust, provenance, freshness, and install decisions."
+      }
     },
     {
       "id": "ai-native-product-surfaces",
@@ -94,12 +121,39 @@
       "listing_warnings": [],
       "recommendation_eligible": false,
       "recommendation_blockers": [
-        "Trust state is 'Community' — recommendation requires 'Verified' or 'Official'"
+        "Trust state is 'Community' \u2014 recommendation requires 'Verified' or 'Official'"
       ],
       "recommendation_warnings": [],
       "route_recommendation": "review-before-install",
       "badge": "Community (Restricted)",
-      "summary": "AI-native product/application surfaces, problem framing, product demos, PM case studies, planned program intelligence,..."
+      "summary": "AI-native product/application surfaces, problem framing, product demos, PM case studies, planned program intelligence,...",
+      "context_fit": {
+        "evidence_label": "Synthetic/demo Graphify-backed local fit evidence",
+        "source": "tests/fixtures/graphify/context_fit_graph.json",
+        "recommendation": "route_with_care",
+        "merge_risk": "medium",
+        "gap_percentage": 0.56,
+        "exact_overlap": [
+          "AI-native Product Framing",
+          "Product Case Studies"
+        ],
+        "graph_evidence_overlap": [
+          "I-know-kungfu cookbook wiki project"
+        ],
+        "gaps": [
+          "Planned program intelligence",
+          "myAbode",
+          "Find-the-lock problem-first methodology"
+        ],
+        "boundary_warnings": [
+          "Graph evidence touches product-surface context; route with care until product notes and agent workflow boundaries are harmonized."
+        ],
+        "evidence_sources": [
+          "docs/product/wiki/concepts/ai-native-framing.md",
+          "docs/product/wiki/concepts/product-case-study.md"
+        ],
+        "trust_boundary": "Graphify evidence supports local fit only; Wiki Contract fields still govern trust, provenance, freshness, and install decisions."
+      }
     }
   ]
 }
