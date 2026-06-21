@@ -1,0 +1,26 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "name": "Synthetic Graphify Dangling Link Fixture",
+    "purpose": "Edge-case fixture for adapters that must tolerate or report graph links whose source or target node is missing."
+  },
+  "nodes": [
+    {
+      "id": "agent-workflows:knowledge-pack-routing",
+      "label": "Knowledge Pack Routing",
+      "source_file": "docs/agent-workflows/wiki/concepts/knowledge-pack-routing.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 1
+    }
+  ],
+  "links": [
+    {
+      "source": "agent-workflows:knowledge-pack-routing",
+      "target": "missing:node",
+      "relation": "references_missing_node",
+      "confidence": "AMBIGUOUS"
+    }
+  ]
+}

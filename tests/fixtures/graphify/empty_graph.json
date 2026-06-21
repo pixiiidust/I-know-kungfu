@@ -1,0 +1,10 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "name": "Synthetic Graphify Empty Graph Fixture",
+    "purpose": "Edge-case fixture for Graphify-backed Context Fit adapters when local graph evidence is empty."
+  },
+  "nodes": [],
+  "links": []
+}

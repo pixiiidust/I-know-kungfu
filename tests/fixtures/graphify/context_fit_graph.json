@@ -1,0 +1,199 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "name": "Synthetic Graphify Context Fit Fixture",
+    "purpose": "Deterministic local graph evidence for Graphify-backed Context Fit demos and tests. Contains useful concepts plus intentional edge-case nodes."
+  },
+  "nodes": [
+    {
+      "id": "agent-workflows:knowledge-pack-routing",
+      "label": "Knowledge Pack Routing",
+      "source_file": "docs/agent-workflows/wiki/concepts/knowledge-pack-routing.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 1
+    },
+    {
+      "id": "agent-workflows:runtime-memory-routing",
+      "label": "Runtime Memory Knowledge Routing",
+      "source_file": "docs/agent-workflows/wiki/concepts/runtime-memory-knowledge-routing.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 1
+    },
+    {
+      "id": "agent-workflows:bounded-context-tree",
+      "label": "Bounded Context Tree Pattern",
+      "source_file": "docs/agent-workflows/wiki/concepts/bounded-context-tree-pattern.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 1
+    },
+    {
+      "id": "agent-workflows:pixoid-crew",
+      "label": "Pixoid Crew Operating Model",
+      "source_file": "docs/agent-workflows/wiki/syntheses/pixoid-crew-operating-model.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 1
+    },
+    {
+      "id": "local-ai:mcp-server-development",
+      "label": "MCP Server Development",
+      "source_file": "docs/local-ai/wiki/concepts/mcp-server-development.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 2
+    },
+    {
+      "id": "local-ai:local-retrieval-agent-infrastructure",
+      "label": "Local Retrieval Agent Infrastructure",
+      "source_file": "docs/local-ai/wiki/concepts/local-retrieval-agent-infrastructure.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 2
+    },
+    {
+      "id": "local-ai:llms-txt-entrypoints",
+      "label": "llms.txt entrypoints",
+      "source_file": "docs/local-ai/wiki/concepts/agent-entrypoints.md",
+      "source_location": "L18",
+      "file_type": "document",
+      "community": 2
+    },
+    {
+      "id": "product:ai-native-framing",
+      "label": "AI-native Product Framing",
+      "source_file": "docs/product/wiki/concepts/ai-native-framing.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 3
+    },
+    {
+      "id": "product:case-study",
+      "label": "Product Case Studies",
+      "source_file": "docs/product/wiki/concepts/product-case-study.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 3
+    },
+    {
+      "id": "src/iknow/fit/compare.py",
+      "label": "compare.py",
+      "source_file": "src/iknow/fit/compare.py",
+      "source_location": "L1",
+      "file_type": "code",
+      "community": 4
+    },
+    {
+      "id": "python:typing",
+      "label": "typing",
+      "source_file": "",
+      "source_location": null,
+      "file_type": "concept",
+      "community": 0
+    },
+    {
+      "id": "python:path",
+      "label": "Path",
+      "source_file": "",
+      "source_location": null,
+      "file_type": "concept",
+      "community": 0
+    },
+    {
+      "id": "edge-case:no-label",
+      "source_file": "docs/edge/no-label.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 9
+    },
+    {
+      "id": "edge-case:no-source",
+      "label": "No Source Concept",
+      "source_file": "",
+      "source_location": null,
+      "file_type": "concept",
+      "community": 9
+    },
+    {
+      "id": "edge-case:absolute-path-redaction",
+      "label": "Absolute Path Redaction",
+      "source_file": "workspace/private/notes/absolute-path-redaction.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 9
+    },
+    {
+      "id": "duplicate:a",
+      "label": "Knowledge Pack Routing",
+      "source_file": "docs/duplicates/knowledge-pack-routing-copy.md",
+      "source_location": "L1",
+      "file_type": "document",
+      "community": 1
+    }
+  ],
+  "links": [
+    {
+      "source": "agent-workflows:knowledge-pack-routing",
+      "target": "agent-workflows:runtime-memory-routing",
+      "relation": "references",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "agent-workflows:knowledge-pack-routing",
+      "target": "agent-workflows:bounded-context-tree",
+      "relation": "uses",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "agent-workflows:pixoid-crew",
+      "target": "agent-workflows:knowledge-pack-routing",
+      "relation": "routes_to",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "local-ai:mcp-server-development",
+      "target": "local-ai:local-retrieval-agent-infrastructure",
+      "relation": "supports",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "local-ai:llms-txt-entrypoints",
+      "target": "local-ai:mcp-server-development",
+      "relation": "served_alongside",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "agent-workflows:knowledge-pack-routing",
+      "target": "local-ai:llms-txt-entrypoints",
+      "relation": "cross_context_entrypoint",
+      "confidence": "AMBIGUOUS"
+    },
+    {
+      "source": "product:ai-native-framing",
+      "target": "product:case-study",
+      "relation": "frames",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "product:ai-native-framing",
+      "target": "agent-workflows:bounded-context-tree",
+      "relation": "cross_context_overlap",
+      "confidence": "AMBIGUOUS"
+    },
+    {
+      "source": "src/iknow/fit/compare.py",
+      "target": "agent-workflows:knowledge-pack-routing",
+      "relation": "mentions",
+      "confidence": "AMBIGUOUS"
+    },
+    {
+      "source": "duplicate:a",
+      "target": "agent-workflows:knowledge-pack-routing",
+      "relation": "duplicates",
+      "confidence": "EXTRACTED"
+    }
+  ]
+}
