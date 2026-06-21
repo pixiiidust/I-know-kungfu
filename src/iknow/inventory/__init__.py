@@ -7,6 +7,10 @@ v1 adapter: optional filesystem scan with manual fallback. No vector DB,
 no cloud sync.
 """
 
+from iknow.inventory.graphify import (
+    inventory_from_graphify_graph,
+    load_graphify_inventory,
+)
 from iknow.inventory.model import InventoryItem, LocalKnowledgeInventory
 from iknow.inventory.static import build_default_inventory, get_inventory
 
@@ -15,4 +19,6 @@ __all__ = [
     "LocalKnowledgeInventory",
     "build_default_inventory",
     "get_inventory",
+    "inventory_from_graphify_graph",
+    "load_graphify_inventory",
 ]
