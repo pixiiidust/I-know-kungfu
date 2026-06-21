@@ -446,9 +446,17 @@ def _cmd_fit(args: argparse.Namespace) -> int:
     print(f"Merge risk:    {fit.merge_risk}")
     print(f"Gap:           {fit.gap_percentage:.0%} of scope topics are new")
     print()
-    print(f"Overlap ({len(fit.overlapping_topics)} topics):")
+    print(f"Overlap ({len(fit.overlapping_topics)} exact topics):")
     for topic in fit.overlapping_topics:
         print(f"  ✓ {topic}")
+    print()
+    print(f"Graph evidence ({len(fit.graph_evidence_topics)} related topics):")
+    for topic in fit.graph_evidence_topics:
+        print(f"  ~ {topic}")
+    if fit.evidence_sources:
+        print("Evidence sources:")
+        for source in fit.evidence_sources[:8]:
+            print(f"  • {source}")
     print()
     print(f"Gaps ({len(fit.gap_topics)} topics):")
     for topic in fit.gap_topics:

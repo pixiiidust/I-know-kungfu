@@ -45,10 +45,20 @@ class FitResult:
     # -- Overlap / gaps -----------------------------------------------------
 
     overlapping_topics: List[str] = field(default_factory=list)
-    """Scope items present in both the candidate wiki and the inventory."""
+    """Exact scope items present in both the candidate wiki and inventory."""
+
+    graph_evidence_topics: List[str] = field(default_factory=list)
+    """Candidate scope items with related Graphify/local evidence but no exact match.
+
+    These remain gaps unless the deterministic exact-overlap rules match them.
+    They are advisory evidence only and should not create install authority.
+    """
+
+    evidence_sources: List[str] = field(default_factory=list)
+    """Local-safe source paths supporting exact or related graph evidence."""
 
     gap_topics: List[str] = field(default_factory=list)
-    """Scope items in the candidate wiki that are NOT in the inventory."""
+    """Scope items in the candidate wiki that are NOT exact inventory overlap."""
 
     # -- Boundary / conflict ------------------------------------------------
 

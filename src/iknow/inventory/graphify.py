@@ -183,6 +183,10 @@ def _inventory_item_for_community(
         non_scope=[],
         entry_points=[ServingEntryPoint.MARKDOWN],
         trust_state=TrustState.COMMUNITY,
+        evidence_sources={
+            label: [source] if source else []
+            for label, source, _degree in sorted_topics
+        },
     )
 
 

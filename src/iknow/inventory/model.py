@@ -9,7 +9,7 @@ to a Wiki Contract's "what does this wiki offer?".
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import Dict, List
 
 from iknow.contracts.model import ServingEntryPoint, TrustState
 
@@ -42,6 +42,14 @@ class InventoryItem:
 
     trust_state: TrustState
     """Trust posture of the local knowledge for this area."""
+
+    evidence_sources: Dict[str, List[str]] = field(default_factory=dict)
+    """Optional topic → local source paths evidence map.
+
+    Adapters such as Graphify can populate this so Context Fit can show why a
+    topic was considered local evidence without treating the evidence as trust,
+    provenance, freshness, or install authority.
+    """
 
 
 @dataclass
